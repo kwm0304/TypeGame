@@ -153,11 +153,9 @@ public class GameHub : Hub
     var game = _context.Games.FirstOrDefault(g => g.GameId == gameId);
     if (game != null && game.Participants.Count == 2 && !game.IsComplete)
     {
-      // Start the game logic here (e.g., set initial game state, notify players)
-      game.IsComplete = false; // Set to false if this means the game is ongoing
+      game.IsComplete = false; 
       _context.SaveChanges();
 
-      // Notify the players that the game has started
       await Clients.Group(gameId.ToString()).SendAsync("GameStarted", gameId);
     }
   }

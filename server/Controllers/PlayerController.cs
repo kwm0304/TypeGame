@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Dtos;
+using server.Interfaces;
 using server.Models;
 using server.Services;
 
@@ -13,10 +14,10 @@ public class PlayerController : ControllerBase
 {
   private readonly UserManager<Player> _userManager;
   private readonly SignInManager<Player> _signInManager;
-  private readonly TokenService _tokenService;
+  private readonly ITokenService _tokenService;
   
 
-  public PlayerController(UserManager<Player> userManager, SignInManager<Player> signInManager, TokenService tokenService)
+  public PlayerController(UserManager<Player> userManager, SignInManager<Player> signInManager, ITokenService tokenService)
   {
     _userManager = userManager;
     _signInManager = signInManager;

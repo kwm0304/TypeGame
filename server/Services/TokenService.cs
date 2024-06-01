@@ -2,11 +2,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using server.Interfaces;
 using server.Models;
 
 namespace server.Services;
 
-public class TokenService
+public class TokenService : ITokenService
 {
    private readonly IConfiguration _config;
   private readonly SymmetricSecurityKey _key;

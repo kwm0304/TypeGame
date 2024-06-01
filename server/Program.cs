@@ -5,6 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using server.Models;
 using server.Data;
 using server.Hubs;
+using server.Interfaces;
+using server.Services;
+using server.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -45,6 +48,8 @@ builder.Services.AddAuthentication(options =>
         )
     };
 });
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>

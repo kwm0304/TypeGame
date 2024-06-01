@@ -18,7 +18,7 @@ public class GameHub : Hub
   public override Task OnConnectedAsync()
   {
     var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-    if (!String.IsNullOrEmpty(UserId))
+    if (!string.IsNullOrEmpty(UserId))
     {
       var username = _context.Users.FirstOrDefault(u => u.Id == UserId).UserName;
       Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceivedUserConnection", UserId, username);
@@ -41,7 +41,7 @@ public class GameHub : Hub
         HubConnections.Users.Add(UserId, UserConnections);
       }
     }
-    if (!String.IsNullOrEmpty(UserId))
+    if (!string.IsNullOrEmpty(UserId))
     {
       var userName = _context.Users.FirstOrDefault(u => u.Id == UserId).UserName;
       Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceivedUserDisconnected", UserId, userName);

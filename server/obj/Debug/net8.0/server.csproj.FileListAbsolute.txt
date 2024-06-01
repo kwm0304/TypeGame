@@ -148,3 +148,4 @@ C:\Users\Owner\Desktop\MonkiesType\server\obj\Debug\net8.0\refint\server.dll
 C:\Users\Owner\Desktop\MonkiesType\server\obj\Debug\net8.0\server.pdb
 C:\Users\Owner\Desktop\MonkiesType\server\obj\Debug\net8.0\server.genruntimeconfig.cache
 C:\Users\Owner\Desktop\MonkiesType\server\obj\Debug\net8.0\ref\server.dll
+C:\Users\Owner\Desktop\MonkiesType\server\obj\Debug\net8.0\server.sourcelink.json

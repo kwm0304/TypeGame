@@ -13,7 +13,7 @@ public class ApiService
 
   public async Task<T> GetTextAsync<T>()
   {
-    string url = "https://baconipsum.com/api/?type=all-meat&sentences=2&format=text";
+    string url = "https://baconipsum.com/api/?type=all-meat&sentences=3&format=text";
     try
     {
       var response = await _http.GetAsync(url);

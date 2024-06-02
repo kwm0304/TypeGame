@@ -16,9 +16,9 @@ const Navbar = () => {
           <PiKeyboardBold className="text-monkeyAccent text-4xl" />
           <div className="relative">
             <span className="absolute top-0 left-0 text-xs text-monkeyDarkText">
-              monkey see
+              monkies see
             </span>
-            <div className="text-white font-semibold text-3xl tracking-wider pb-2">monkeytype</div>
+            <div className="text-white font-semibold text-3xl tracking-wider pb-2">monkiestype</div>
           </div>
         </div>
         <FaKeyboard className="text-monkeyDarkText text-lg" />

@@ -13,11 +13,11 @@ namespace server.Controllers;
 [ApiController]
 public class GameController : ControllerBase
 {
-  private readonly ApiService _apiService;
+  private readonly IApiService _apiService;
   private readonly UserManager<Player> _userManager;
   private readonly IGameRepository _gameRepository;
 
-  public GameController(ApiService apiService, UserManager<Player> userManager, IGameRepository gameRepository)
+  public GameController(IApiService apiService, UserManager<Player> userManager, IGameRepository gameRepository)
   {
     _apiService = apiService;
     _userManager = userManager;
@@ -29,7 +29,7 @@ public class GameController : ControllerBase
   {
     try
     {
-      var gameText = await _apiService.GetTextAsync<string>();
+      var gameText = await _apiService.GetTextAsync();
       return Ok(gameText);
     }
     catch (Exception ex)

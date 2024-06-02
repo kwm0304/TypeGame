@@ -48,6 +48,7 @@ builder.Services.AddAuthentication(options =>
         )
     };
 });
+builder.Services.AddHttpClient<IApiService, ApiService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddCors(options =>

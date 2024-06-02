@@ -12,15 +12,19 @@ const Navbar = () => {
   return (
     <div className="bg-monkeyBG text-monkeyText flex items-center justify-between p-4 sticky top-0 fixed pt-6 px-48">
       <div className="flex items-center space-x-4 ">
-        <div className="flex items-center space-x-2">
-          <PiKeyboardBold className="text-monkeyAccent text-4xl" />
-          <div className="relative">
-            <span className="absolute top-0 left-0 text-xs text-monkeyDarkText">
-              monkies see
-            </span>
-            <div className="text-white font-semibold text-3xl tracking-wider pb-2">monkiestype</div>
+        <Link to="/">
+          <div className="flex items-center space-x-2">
+            <PiKeyboardBold className="text-monkeyAccent text-4xl" />
+            <div className="relative">
+              <span className="absolute top-0 left-0 text-xs text-monkeyDarkText">
+                monkies see
+              </span>
+              <div className="text-white font-semibold text-3xl tracking-wider pb-2">
+                monkiestype
+              </div>
+            </div>
           </div>
-        </div>
+        </Link>
         <FaKeyboard className="text-monkeyDarkText text-lg" />
         <FaCrown className="text-monkeyDarkText text-lg" />
         <FaInfoCircle className="text-monkeyDarkText text-lg" />

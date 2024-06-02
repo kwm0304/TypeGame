@@ -5,9 +5,8 @@ const UserAuthentication = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-monkeyBG">
       <div className="flex items-stretch space-x-10 w-full max-w-3xl gap-x-20">
-          <SignupForm />
-        
-          <LoginForm />
+        <SignupForm Username={""} Password={""} Email={""} Name={""} />
+        <LoginForm Username={""} Password={""} />
       </div>
     </div>
   );

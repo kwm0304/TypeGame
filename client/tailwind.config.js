@@ -42,6 +42,7 @@ const config = {
       colors: {
         monkeyBG: "#323437",
         monkeyText: "#d1d0c5",
+        monkeyDarkText: "#646669",
         monkeyAccent: "#e2b714",
         darkerBG: "#2c2e31"
       }

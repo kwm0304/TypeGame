@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { UserContextType } from "../types";
+import { UserContextType, UserProfile } from "../types";
 import { useNavigate } from "react-router-dom";
 import { signup, login } from "@/services/userService";
 
@@ -66,8 +66,7 @@ export const UserProvider = ({ children }: Props) => {
           navigate("/");
         }
       })
-      .catch(() => setErrMsg("Invalid Username and/or Password")
-      );
+      .catch(() => setErrMsg("Invalid Username and/or Password"));
   };
 
   const isLoggedIn = () => {

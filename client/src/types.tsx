@@ -31,3 +31,18 @@ export interface UserProfile  {
   userName: string, 
   email: string, 
 } 
+
+export interface GameContextProps {
+  text: string;
+  currentIndex: number;
+  correct: (boolean | null)[];
+  setCurrentIndex: (index: number) => void;
+  setCorrect: (correct: (boolean | null)[]) => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
+  undoLastKey: () => void;
+  countErrors: () => number;
+  calculateAccuracy: () => string;
+  calculateWPM: (time: number) => string;
+  startTimer: () => void;
+  timeLeft: number;
+}

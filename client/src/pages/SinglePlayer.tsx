@@ -1,24 +1,8 @@
-import { getGameText } from "@/services/gameTextService";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useGame } from "@/context/GameContext";
 
 const SinglePlayer = () => {
-  const [text, setText] = useState<string>("");
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [correct, setCorrect] = useState<(boolean | null)[]>([]);
-
-  useEffect(() => {
-    const fetchText = async () => {
-      try {
-        const gameText = await getGameText();
-        const cleaned = gameText.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "");
-        setText(cleaned);
-        setCorrect(new Array(cleaned.length).fill(null));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchText();
-  }, []);
+  const { text, currentIndex, correct, handleKeyDown, countErrors, calculateAccuracy, calculateWPM, timeLeft } = useGame();
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -29,40 +13,7 @@ const SinglePlayer = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [currentIndex, text]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    const keyPressed = e.key.toLowerCase();
-    if (keyPressed === "backspace") {
-      undoLastKey();
-    } else if (keyPressed.length === 1) {
-      checkKey(keyPressed);
-    }
-  };
-
-  const checkKey = (keyPressed: string) => {
-    const updatedCorrectArr = [...correct];
-    if (text[currentIndex] === keyPressed) {
-      updatedCorrectArr[currentIndex] = true;
-    } else {
-      updatedCorrectArr[currentIndex] = false;
-    }
-    setCorrect(updatedCorrectArr);
-    setCurrentIndex(currentIndex + 1);
-  };
-
-  const undoLastKey = () => {
-    if (currentIndex > 0) {
-      const updatedCorrectArr = [...correct];
-      updatedCorrectArr[currentIndex - 1] = null;
-      setCorrect(updatedCorrectArr);
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const countErrors = () => {
-    return correct.filter((isCorrect) => isCorrect === false).length;
-  };
+  }, [currentIndex, text, handleKeyDown]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-monkeyBG">
@@ -81,8 +32,11 @@ const SinglePlayer = () => {
           );
         })}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 text-white">
+        <p>Time: {timeLeft}</p>
         <p>Errors: {countErrors()}</p>
+        <p>Accuracy: {calculateAccuracy()}</p>
+        <p>WPM: {calculateWPM(60000)}</p>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ public class TokenService : ITokenService
   public TokenService(IConfiguration config)
   {
     _config = config;
-    _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
+    _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"]));
   }
   public string CreateToken(Player player)
   {

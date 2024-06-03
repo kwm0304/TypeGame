@@ -33,17 +33,22 @@ export const UserProvider = ({ children }: Props) => {
   ) => {
     await signup(Email, Username, Password, Name)
       .then((res) => {
+        console.log("RES", res);
+
         const id = res?.data.userId;
-        localStorage.setItem("token", res.data.token);
-        const userObj = {
-          userName: res?.data.userName,
-          email: res?.data.email,
-          id: id,
-        };
-        localStorage.setItem("user", JSON.stringify(user));
-        setToken(res.data.token);
-        setUser(userObj!);
-        navigate("/login");
+        console.log("RES ", res);
+        if (res) {
+          localStorage.setItem("token", res?.data.token);
+          const userObj = {
+            userName: res?.data.userName,
+            email: res?.data.email,
+            id: id,
+          };
+          localStorage.setItem("user", JSON.stringify(userObj));
+          setToken(res?.data.token);
+          setUser(userObj!);
+          navigate("/");
+        }
       })
       .catch((e) => console.error(e));
   };
@@ -59,7 +64,9 @@ export const UserProvider = ({ children }: Props) => {
             email: res?.data.email,
             id: res?.data.userId,
           };
-
+          if (res.status === 200) {
+            window.alert("Login Successful");
+          }
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.token);
           setUser(userObj!);
@@ -78,7 +85,6 @@ export const UserProvider = ({ children }: Props) => {
     localStorage.removeItem("user");
     setUser(null);
     setToken("");
-    navigate("/login");
   };
 
   return (

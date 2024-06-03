@@ -15,7 +15,7 @@ public class PlayerController : ControllerBase
   private readonly UserManager<Player> _userManager;
   private readonly SignInManager<Player> _signInManager;
   private readonly ITokenService _tokenService;
-  
+
 
   public PlayerController(UserManager<Player> userManager, SignInManager<Player> signInManager, ITokenService tokenService)
   {
@@ -44,45 +44,49 @@ public class PlayerController : ControllerBase
       return Unauthorized("Incorrect credentials provided, please try again");
     }
 
-    var token = _tokenService.CreateToken(player);
-
     return Ok(new PlayerDto
     {
+      UserId = player.Id,
       Username = player.UserName,
       Email = player.Email,
-      Token = token
+      Token = _tokenService.CreateToken(player)
     });
   }
 
   [HttpPost("register")]
   public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
   {
-    if (!ModelState.IsValid)
+    try
     {
+      if (!ModelState.IsValid)
       return BadRequest(ModelState);
-    }
 
-    var player = new Player
-    {
-      UserName = registerDto.Username,
-      Email = registerDto.Email
-    };
-
-    var result = await _userManager.CreateAsync(player, registerDto.Password);
-    if (result.Succeeded)
-    {
-      var token = _tokenService.CreateToken(player);
-
-      return Ok(new PlayerDto
+      var player = new Player
       {
-        Username = player.UserName,
-        Email = player.Email,
-        Token = token
-      });
-    }
+        UserName = registerDto.Username,
+        Email = registerDto.Email,
+      };
 
-    return StatusCode(500, result.Errors);
+      var created = await _userManager.CreateAsync(player, registerDto.Password);
+
+      if (created.Succeeded)
+      {
+        return Ok(new PlayerDto
+        {
+          UserId = player.Id,
+          Username = player.UserName,
+          Email = player.Email,
+          Token = _tokenService.CreateToken(player)
+        }); 
+      } else {
+        return StatusCode(500, created.Errors.Select(e => e.Description).ToList());
+      }
+    }
+    catch (Exception e)
+    {
+      return StatusCode(500, e.Message);
+    }
   }
 
-  
+
 }

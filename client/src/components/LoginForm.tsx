@@ -24,7 +24,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
     <div className="flex-1 p-6 rounded-md flex flex-col justify-between w-72 font-reddit-mono">
       <div>
         <h2 className="text-md font-medium text-white mb-4">login</h2>
-        <form className="space-y-4" onSubmit={handleLogin}>
+        <form className="space-y-4" onSubmit={(e) => handleLogin(e)}>
           <input
             type="email"
             placeholder="Email"

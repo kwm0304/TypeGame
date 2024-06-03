@@ -16,13 +16,26 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      if (name === "Username") {
+        return { ...prev, [name]: value, Name: value };
+      }
+      return { ...prev, [name]: value };
+    });
   };
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.Email === confirmEmail && formData.Password === confirmPassword) {
-      register(formData.Email, formData.Username, formData.Password, formData.Name);
+    if (
+      formData.Email === confirmEmail &&
+      formData.Password === confirmPassword
+    ) {
+      register(
+        formData.Email,
+        formData.Username,
+        formData.Password,
+        formData.Name
+      );
     } else {
       console.log("Email or Password do not match");
     }
@@ -34,6 +47,7 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
       <form className="space-y-4" onSubmit={handleSignup}>
         <input
           type="text"
+          name="Username"
           placeholder="Username"
           className="w-full px-3 py-2 rounded-md bg-darkerBG text-white"
           value={formData.Username}
@@ -41,6 +55,7 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
         />
         <input
           type="email"
+          name="Email"
           placeholder="Email"
           className="w-full px-3 py-2 rounded-md bg-darkerBG text-white"
           value={formData.Email}
@@ -55,6 +70,7 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
         />
         <input
           type="password"
+          name="Password"
           placeholder="Password"
           className="w-full px-3 py-2 rounded-md bg-darkerBG text-white"
           value={formData.Password}
@@ -68,13 +84,13 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <div className="flex items-center justify-center">
-        <button
-          type="submit"
-          className="w-full py-2 bg-darkerBG text-white rounded-md"
-        >
-          <FaUserPlus className="inline mr-2 mb-1" />
-          Sign Up
-        </button>
+          <button
+            type="submit"
+            className="w-full py-2 bg-darkerBG text-white rounded-md"
+          >
+            <FaUserPlus className="inline mr-2 mb-1" />
+            Sign Up
+          </button>
         </div>
       </form>
     </div>

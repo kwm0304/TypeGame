@@ -38,11 +38,11 @@ export const UserProvider = ({ children }: Props) => {
         const id = res?.data.userId;
         console.log("RES ", res);
         if (res) {
-          localStorage.setItem("token", res?.data.token);
+          localStorage.setItem("token", res?.token);
           const userObj = {
-            userName: res?.data.userName,
-            email: res?.data.email,
-            id: id,
+            userName: res?.username,
+            email: res?.email,
+            id: res?.userId,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.token);
@@ -58,11 +58,11 @@ export const UserProvider = ({ children }: Props) => {
       .then((res) => {
         console.log("RES", res);
         if (res) {
-          localStorage.setItem("token", res?.data.token);
+          localStorage.setItem("token", res?.token);
           const userObj = {
-            userName: res?.data.userName,
-            email: res?.data.email,
-            id: res?.data.userId,
+            userName: res?.username,
+            email: res?.email,
+            id: res?.userId,
           };
           if (res.status === 200) {
             window.alert("Login Successful");

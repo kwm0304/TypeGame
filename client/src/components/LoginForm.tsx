@@ -21,13 +21,15 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   };
 
   return (
-    <div className="flex-1 p-6 rounded-md flex flex-col justify-between w-72 font-reddit-mono">
+    <div className="flex-1 p-6 rounded-md flex flex-col justify-between w-72 font-reddit-mono min-h-full">
       <div>
         <h2 className="text-md font-medium text-white mb-4">login</h2>
-        <form className="space-y-4" onSubmit={(e) => handleLogin(e)}>
+        <form className="space-y-4" onSubmit={handleLogin}>
+          <div className="grid grid-rows-2 items-stretch min-h-full border border-red-500">
+            <div className="border border-red-500">
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Username"
             name="Username"
             value={loginFormData.Username}
             onChange={handleChange}
@@ -48,15 +50,18 @@ const LoginForm: React.FC<LoginFormProps> = () => {
             />
             <span className="ml-2">Remember me</span>
           </label>
+          </div>
+          
+          <button
+            type="submit"
+            className="w-full py-2 bg-darkerBG text-white rounded-md flex items-center justify-center mt-auto border border-red-500"
+          >
+            <IoEnterOutline className="inline mr-2 text-lg font-extrabold" />
+            Sign In
+          </button>
+          </div>
         </form>
       </div>
-      <button
-        type="submit"
-        className="w-full py-2 bg-darkerBG text-white rounded-md flex items-center justify-center mt-auto"
-      >
-        <IoEnterOutline className="inline mr-2 text-lg font-extrabold" />
-        Sign In
-      </button>
     </div>
   );
 };

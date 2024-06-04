@@ -27,30 +27,41 @@ public class PlayerController : ControllerBase
   [HttpPost("login")]
   public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
   {
-    if (!ModelState.IsValid)
+    try
     {
-      return BadRequest(ModelState);
-    }
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
 
-    var player = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
-    if (player == null)
-    {
-      return Unauthorized("Invalid username, please try again");
+      var player = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username);
+      if (player == null)
+      {
+        return Unauthorized("Invalid username, please try again");
+      }
+      Console.WriteLine("dto password: " + loginDto.Password);
+      Console.WriteLine("dto username: " + loginDto.Username);
+      Console.WriteLine("player password: " + player.PasswordHash);
+      Console.WriteLine("player username: " + player.UserName);
+      var result = await _signInManager.CheckPasswordSignInAsync(player, loginDto.Password, false);
+      if (!result.Succeeded)
+      {
+        Console.WriteLine(result);
+        return Unauthorized("Incorrect credentials provided, please try again");
+      }
+      var token = _tokenService.CreateToken(player);
+      return Ok(new PlayerDto
+      {
+        UserId = player.Id,
+        Username = player.UserName,
+        Email = player.Email,
+        Token = token
+      });
     }
-
-    var result = await _signInManager.CheckPasswordSignInAsync(player, loginDto.Password, false);
-    if (!result.Succeeded)
+    catch (Exception e)
     {
-      return Unauthorized("Incorrect credentials provided, please try again");
+      return StatusCode(500, e.Message);
     }
-
-    return Ok(new PlayerDto
-    {
-      UserId = player.Id,
-      Username = player.UserName,
-      Email = player.Email,
-      Token = _tokenService.CreateToken(player)
-    });
   }
 
   [HttpPost("register")]
@@ -59,7 +70,7 @@ public class PlayerController : ControllerBase
     try
     {
       if (!ModelState.IsValid)
-      return BadRequest(ModelState);
+        return BadRequest(ModelState);
 
       var player = new Player
       {
@@ -77,8 +88,10 @@ public class PlayerController : ControllerBase
           Username = player.UserName,
           Email = player.Email,
           Token = _tokenService.CreateToken(player)
-        }); 
-      } else {
+        });
+      }
+      else
+      {
         return StatusCode(500, created.Errors.Select(e => e.Description).ToList());
       }
     }

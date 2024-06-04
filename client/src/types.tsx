@@ -30,6 +30,7 @@ export interface UserContextType {
 export interface UserProfile  { 
   userName: string, 
   email: string, 
+  id: string
 } 
 
 export interface GameContextProps {

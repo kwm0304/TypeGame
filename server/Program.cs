@@ -22,7 +22,6 @@ builder.Services.AddIdentity<Player, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 6;
 
-    options.SignIn.RequireConfirmedAccount = true;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 }).AddEntityFrameworkStores<ServerDbContext>();
 builder.Services.AddAuthentication(options =>
@@ -54,11 +53,10 @@ builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
-        builder.AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowAnyOrigin()
-            .SetIsOriginAllowed(origin => true)
-    );
+    builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true));
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

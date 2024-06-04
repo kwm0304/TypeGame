@@ -16,12 +16,7 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      if (name === "Username") {
-        return { ...prev, [name]: value, Name: value };
-      }
-      return { ...prev, [name]: value };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,6 +40,14 @@ const SignupForm: React.FC<SignUpFormProps> = () => {
     <div className="flex-1 p-6 rounded-md flex flex-col justify-between font-reddit-mono w-72">
       <h2 className="text-md font-medium text-white mb-4">register</h2>
       <form className="space-y-4" onSubmit={handleSignup}>
+        <input
+          type="text"
+          name="Name"
+          placeholder="Name"
+          className="w-full px-3 py-2 rounded-md bg-darkerBG text-white"
+          value={formData.Name}
+          onChange={handleChange}
+        />
         <input
           type="text"
           name="Username"

@@ -1,12 +1,10 @@
-import { Token } from "@/types";
 import axios from "axios";
 
-const baseUrl = "http://localhost:5214/api/Player";
 
 export const login = async (username: string, password: string) => {
   try {
-    const data = await axios.post<Token>(
-      `${baseUrl}/login`,
+    const response = await axios.post(
+      "api/player/login",
       {
         Username: username,
         Password: password,
@@ -19,7 +17,7 @@ export const login = async (username: string, password: string) => {
         },
       }
     );
-    return data;
+    return response.data;
   } catch (error) {
     console.error(error);
   }
@@ -31,8 +29,8 @@ export const signup = async (
   Name: string
 ) => {
   try {
-    const data = await axios.post<Token>(
-      `${baseUrl}/register`,
+    const response = await axios.post(
+      "api/player/register",
       {
         Email: Email,
         Username: Username,
@@ -47,7 +45,7 @@ export const signup = async (
         },
       }
     );
-    return data;
+    return response.data;
   } catch (error) {
     console.error(error);
   }

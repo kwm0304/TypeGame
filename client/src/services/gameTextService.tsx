@@ -14,3 +14,33 @@ export const getGameText = async () => {
     console.error(error);
   }
 };
+
+export const submitGameResults = async (
+  username: string,
+  time: number,
+  wpm: number,
+  accuracy: number
+) => {
+  try {
+    const formattedTime = new Date(time * 1000).toISOString().substring(11, 8);
+    const response = await axios.post(
+      `api/game/v1?username=${username}`,
+      {
+        WinnerTime: formattedTime,
+        WordsPerMinute: wpm,
+        Accuracy: accuracy
+      },
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    console.log("GAME RES ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};

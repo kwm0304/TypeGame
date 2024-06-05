@@ -59,9 +59,6 @@ export const UserProvider = ({ children }: Props) => {
             email: res?.email,
             id: res?.userId,
           };
-          if (res.status === 200) {
-            window.alert("Login Successful");
-          }
           localStorage.setItem("user", JSON.stringify(userObj));
           setToken(res?.data.token);
           setUser(userObj!);

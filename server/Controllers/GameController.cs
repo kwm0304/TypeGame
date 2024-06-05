@@ -39,7 +39,7 @@ public class GameController : ControllerBase
   }
 
 [HttpPost("v1")]
-  public async Task<IActionResult> SinglePlayerResults(string username,[FromBody] GameDto gameDto)
+  public async Task<IActionResult> SinglePlayerResults([FromQuery] string username,[FromBody] GameDto gameDto)
   {
     var player = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == username);
     if (player == null)

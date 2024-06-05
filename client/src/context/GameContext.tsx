@@ -16,6 +16,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [correct, setCorrect] = useState<(boolean | null)[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
+  const [activeGame, setActiveGame] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchText = async () => {
@@ -43,6 +44,22 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const startTimer = () => {
     setTimerStarted(true);
+  };
+
+  const resetGame = async () => {
+    setCurrentIndex(0);
+    setCorrect([]);
+    setTimeLeft(60);
+    setTimerStarted(false);
+    setActiveGame(true);
+    try {
+      const gameText = await getGameText();
+      const cleaned = gameText.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "");
+      setText(cleaned);
+      setCorrect(new Array(cleaned.length).fill(null));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -86,14 +103,14 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       (isCorrect) => isCorrect === true
     ).length;
     const totalChars = correct.length;
-    return ((correctChars / totalChars) * 100).toFixed(2);
+    return (correctChars / totalChars) * 100;
   };
 
   const calculateWPM = (time: number) => {
     const minutes = time / 60000;
-    const totalChars = text.length;
+    const totalChars = currentIndex;
     const wpm = totalChars / 5 / minutes;
-    return wpm.toFixed(2);
+    return Math.round(wpm * 100) / 100;
   };
 
   return (
@@ -110,7 +127,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         calculateAccuracy,
         calculateWPM,
         startTimer,
-        timeLeft
+        resetGame,
+        activeGame,
+        setActiveGame,
+        timeLeft,
       }}
     >
       {children}

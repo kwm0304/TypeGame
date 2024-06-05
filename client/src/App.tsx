@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import SinglePlayer from "./pages/SinglePlayer";
 import { UserProvider } from "./context/AuthContext";
 import { GameProvider } from "./context/GameContext";
+import DisplayResults from "./pages/DisplayResults";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<SinglePlayer />} />
               <Route path="/user" element={<UserAuthentication />} />
+              <Route path="/results" element={<DisplayResults />} />
             </Routes>
           </GameProvider>
         </UserProvider>

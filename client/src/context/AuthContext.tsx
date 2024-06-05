@@ -33,10 +33,6 @@ export const UserProvider = ({ children }: Props) => {
   ) => {
     await signup(Email, Username, Password, Name)
       .then((res) => {
-        console.log("RES", res);
-
-        const id = res?.data.userId;
-        console.log("RES ", res);
         if (res) {
           localStorage.setItem("token", res?.token);
           const userObj = {
@@ -56,7 +52,6 @@ export const UserProvider = ({ children }: Props) => {
   const loginUser = async (username: string, password: string) => {
     await login(username, password)
       .then((res) => {
-        console.log("RES", res);
         if (res) {
           localStorage.setItem("token", res?.token);
           const userObj = {

@@ -42,8 +42,18 @@ export interface GameContextProps {
   handleKeyDown: (e: React.KeyboardEvent) => void;
   undoLastKey: () => void;
   countErrors: () => number;
-  calculateAccuracy: () => string;
-  calculateWPM: (time: number) => string;
+  calculateAccuracy: () => number;
+  calculateWPM: (time: number) => number;
   startTimer: () => void;
   timeLeft: number;
+  resetGame: () => void;
+  activeGame: boolean;
+  setActiveGame: (active: boolean) => void;
+}
+
+export interface DisplayResultsProps {
+  accuracy: number;
+  wpm: number;
+  errors: number;
+  time: number;
 }

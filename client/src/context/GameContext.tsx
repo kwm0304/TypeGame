@@ -102,7 +102,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const correctChars = correct.filter(
       (isCorrect) => isCorrect === true
     ).length;
-    const totalChars = correct.length;
+    const totalChars = currentIndex;
     return (correctChars / totalChars) * 100;
   };
 

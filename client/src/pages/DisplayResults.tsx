@@ -8,14 +8,28 @@ const DisplayResults: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { accuracy, wpm, errors, time } = location.state as DisplayResultsProps;
-  const { user } = useAuth();
-  
+  const { user, isLoggedIn } = useAuth();
+
   useEffect(() => {
-    if (user) {
-      const username = user.userName;
-      submitGameResults(username, time, wpm, accuracy);
+    console.log("Inside useEffect");
+    if (isLoggedIn() || user) {
+      console.log("User is defined:", user);
+      const username = user?.userName;
+      console.log("Calling submitGameResults with:", { username, time, wpm, accuracy });
+      submitGameResults(username, time, wpm, accuracy)
+        .then(response => {
+          console.log("STATUS: ", response.status)
+          console.log("DATA: ", response.data);
+
+          console.log("Game results submitted successfully:", response);
+        })
+        .catch(error => {
+          console.error("Error submitting game results:", error);
+        });
+    } else {
+      console.log("User is not defined");
     }
-  }, [accuracy, wpm, errors, time, user])
+  }, [accuracy, wpm, errors, time, user]);
 
   const handleNewGame = () => {
     navigate("/");

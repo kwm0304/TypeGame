@@ -36,7 +36,7 @@ const SinglePlayer = () => {
   }, [])
   const handleGameOver = () => {
     const remainingTime = timeLeft === 0 ? 60000 : 60000 - timeLeft;
-
+    console.log("remainingTime: ", remainingTime)
     const calculatedWPM = calculateWPM(remainingTime);
     const calculatedAccuracy = calculateAccuracy();
     const calculatedErrors = countErrors();

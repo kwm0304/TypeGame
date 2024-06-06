@@ -41,6 +41,7 @@ public class GameController : ControllerBase
 [HttpPost("v1")]
   public async Task<IActionResult> SinglePlayerResults([FromQuery] string username,[FromBody] GameDto gameDto)
   {
+    try {
     var player = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == username);
     if (player == null)
     {
@@ -60,5 +61,9 @@ public class GameController : ControllerBase
     var result = _gameRepository.SaveGame(game);
     
     return Ok("Game saved successfully");
+    } catch (Exception ex)
+    {
+      return BadRequest(ex.Message);
+    }
   }
 }

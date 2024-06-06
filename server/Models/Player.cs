@@ -10,5 +10,5 @@ public class Player : IdentityUser
     public int Rank { get; set; }
     public List<Game> Games { get; set; }
     public List<Tournament> Tournaments { get; set; }
-    public TimeSpan AverageGameTime { get; set; }
+    public double AverageGameTime { get; set; }
 }

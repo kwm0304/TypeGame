@@ -12,8 +12,8 @@ using server.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20240530211330_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240605212006_ChangedWPM")]
+    partial class ChangedWPM
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,16 +191,26 @@ namespace server.Migrations
             modelBuilder.Entity("server.Models.Game", b =>
                 {
                     b.Property<int>("GameId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<double>("Accuracy")
+                        .HasColumnType("float");
 
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("PlayedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("WinnerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<TimeSpan>("WinnerTime")
-                        .HasColumnType("time");
+                    b.Property<double>("WinnerTime")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WordsPerMinute")
+                        .HasColumnType("float");
 
                     b.HasKey("GameId");
 
@@ -217,8 +227,8 @@ namespace server.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("AverageGameTime")
-                        .HasColumnType("time");
+                    b.Property<double>("AverageGameTime")
+                        .HasColumnType("float");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

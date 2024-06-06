@@ -8,12 +8,8 @@ const UserAuthentication = () => {
   const [loggedIn, setLoggedIn] = useState(isLoggedIn());
   const [username, setUsername] = useState("");
   useEffect(() => {
-    const appuser = localStorage.getItem("user");
-    setLoggedIn(!!appuser);
-    if (appuser) {
-      const user = JSON.parse(appuser);
-      setUsername(user.userName);
-    }
+    setLoggedIn(isLoggedIn());
+    setUsername(user?.userName || "");
   }, [isLoggedIn]);
 
   const handleLogout = () => {

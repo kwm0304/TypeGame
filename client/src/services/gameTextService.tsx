@@ -22,7 +22,8 @@ export const submitGameResults = async (
   accuracy: number
 ) => {
   try {
-    const formattedTime = new Date(time * 1000).toISOString().substring(11, 8);
+    const formattedTime = time/1000;
+    console.log("TIME: ", formattedTime)
     const response = await axios.post(
       `api/game/v1?username=${username}`,
       {
@@ -38,7 +39,8 @@ export const submitGameResults = async (
         },
       }
     );
-    console.log("GAME RES ", response.data);
+    console.log("GAME RES ", response);
+    console.log("GAME RES STATUS ", response.status);
     return response.data;
   } catch (error) {
     console.error(error);

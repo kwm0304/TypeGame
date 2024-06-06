@@ -188,6 +188,7 @@ namespace server.Migrations
             modelBuilder.Entity("server.Models.Game", b =>
                 {
                     b.Property<int>("GameId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<double>("Accuracy")
@@ -202,11 +203,11 @@ namespace server.Migrations
                     b.Property<string>("WinnerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<TimeSpan>("WinnerTime")
-                        .HasColumnType("time");
+                    b.Property<double>("WinnerTime")
+                        .HasColumnType("float");
 
-                    b.Property<int>("WordsPerMinute")
-                        .HasColumnType("int");
+                    b.Property<double>("WordsPerMinute")
+                        .HasColumnType("float");
 
                     b.HasKey("GameId");
 
@@ -223,8 +224,8 @@ namespace server.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("AverageGameTime")
-                        .HasColumnType("time");
+                    b.Property<double>("AverageGameTime")
+                        .HasColumnType("float");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

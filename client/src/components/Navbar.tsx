@@ -15,6 +15,7 @@ const Navbar = () => {
         <Link to="/">
           <div className="flex items-center space-x-2">
             <PiKeyboardBold className="text-monkeyAccent text-4xl" />
+
             <div className="relative">
               <span className="absolute top-0 left-0 text-xs text-monkeyDarkText">
                 monkies see
@@ -25,8 +26,12 @@ const Navbar = () => {
             </div>
           </div>
         </Link>
-        <FaKeyboard className="text-monkeyDarkText text-lg" />
-        <FaCrown className="text-monkeyDarkText text-lg" />
+        <Link to="/games">
+          <FaKeyboard className="text-monkeyDarkText text-lg" />
+        </Link>
+        <Link to="/leaderboard">
+          <FaCrown className="text-monkeyDarkText text-lg" />
+        </Link>
         <FaInfoCircle className="text-monkeyDarkText text-lg" />
         <FaCog className="text-monkeyDarkText text-lg" />
       </div>

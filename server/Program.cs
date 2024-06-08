@@ -77,8 +77,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.MapControllers();
+
 app.MapHub<GameHub>("/versus");
+app.MapControllers();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();

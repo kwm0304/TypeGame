@@ -10,12 +10,39 @@ public class GameHub : Hub
 {
   private readonly ServerDbContext _context;
   public static Queue<string> PlayerPool { get; set; } = new Queue<string>();
-
+  public static Dictionary<string, string> ConnectionUserMap {get;set;} = new Dictionary<string,string>();
   public GameHub(ServerDbContext context)
   {
     _context = context;
   }
 
+  public override async Task OnConnectedAsync()
+  {
+    string username = Context.User.Identity.Name;
+    if (!string.IsNullOrEmpty(username))
+    {
+      AddPlayerToQueue(username);
+    }
+    await base.OnConnectedAsync();
+  }
+
+  public override async Task OnDisconnectedAsync(Exception ex)
+  {
+    string username;
+    if (ConnectionUserMap.TryGetValue(Context.ConnectionId, out username))
+    {
+      PlayerPool = new Queue<string>(PlayerPool.Where(p => p != username));
+      ConnectionUserMap.Remove(Context.ConnectionId);
+    }
+    await base.OnDisconnectedAsync(ex);
+  }
+
+  public void AddPlayerToQueue(string username)
+  {
+    PlayerPool.Enqueue(username);
+    ConnectionUserMap[Context.ConnectionId] = username;
+    CreateGameParticipants();
+  }
   public void CreateGameParticipants()
   {
     //create new gameconnectiondto with to players from the queue
@@ -27,18 +54,21 @@ public class GameHub : Hub
       GameConnectionDto gameConn = new GameConnectionDto(player1, player2);
       CreateGame(gameConn).Wait();
     }
+    else Console.WriteLine(PlayerPool.Count);
   }
   public async Task CreateGame(GameConnectionDto conn)
   {
     //pulls 2 players from queue
     string player1Id = conn.PlayerNames.Item1;
-    Player player1 = await _context.Users.FirstOrDefaultAsync(p => p.UserName == player1Id);
     string player2Id = conn.PlayerNames.Item2;
-    Player player2 = await _context.Users.FirstOrDefaultAsync(p => p.UserName == player2Id);
+
+    string player1ConnId = ConnectionUserMap.FirstOrDefault(x => x.Value == player1Id).Key;
+    string player2ConnId = ConnectionUserMap.FirstOrDefault(x => x.Value == player2Id).Key;
+
+    string groupName = conn.GameIdentifier;
     //creates GameConnectionDto with usernames
-    await Groups.AddToGroupAsync(Context.ConnectionId, conn.GameIdentifier);
-    await Clients.Group(conn.GameIdentifier).SendAsync("GameStarted", player1, player2);
+    await Groups.AddToGroupAsync(player1ConnId, groupName);
+    await Groups.AddToGroupAsync(player2ConnId, groupName);
+    await Clients.Group(conn.GameIdentifier).SendAsync("GameStarted", player1Id, player2Id);
   }
-
-
 }

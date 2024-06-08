@@ -8,9 +8,19 @@ export default defineConfig({
   plugins: [react(), mkcert()],
   server: {
     proxy: {
-      "^/api" : "http://localhost:5214",
+      "^/api": {
+        target: "http://localhost:5214",
+        changeOrigin: true,
+        secure: false,
+      },
+      "^/versus": {
+        target: "http://localhost:5214",
+        changeOrigin: true,
+        ws: true, // Enable websocket proxying
+        secure: false,
+      },
     },
-    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

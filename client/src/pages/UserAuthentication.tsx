@@ -10,7 +10,7 @@ const UserAuthentication = () => {
   useEffect(() => {
     setLoggedIn(isLoggedIn());
     setUsername(user?.userName || "");
-  }, [isLoggedIn]);
+  }, [isLoggedIn, user]);
 
   const handleLogout = () => {
     logout();

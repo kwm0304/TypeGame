@@ -2,11 +2,13 @@ namespace server.Dtos;
 
 public class GameConnectionDto
 {
-    public Tuple<string, string> PlayerNames { get; set; }
-    public string GameIdentifier =>$"{PlayerNames.Item1}_{PlayerNames.Item2}";
-    public GameConnectionDto(string player1, string player2)
+    public OnlinePlayer player1 { get; set; }
+    public OnlinePlayer player2 { get; set; }
+    public string GameIdentifier => $"{player1.username}_{player2.username}";
+    public string GetConnectionIdByUsername(string Username)
     {
-        PlayerNames = new Tuple<string, string>(player1, player2);
+        if (player1.username == Username) return player1.connectionId;
+        if (player2.username == Username) return player2.connectionId;
+        throw new ArgumentException("Username not found in this game");
     }
-    
 }

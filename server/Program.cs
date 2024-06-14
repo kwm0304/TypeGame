@@ -11,14 +11,15 @@ using server.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment()) {
+if (builder.Environment.IsDevelopment())
+{
     builder.Configuration.AddUserSecrets<Program>();
 }
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ServerDbContext>(options =>
     options.UseSqlServer(connectionString));
-    
+
 builder.Services.AddControllers();
 builder.Services.AddIdentity<Player, IdentityRole>(options =>
 {

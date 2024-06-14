@@ -6,7 +6,7 @@ import Timer from "@/components/Timer";
 const SinglePlayer = () => {
   const {
     text,
-    currentIndex,
+    singlePlayerIndex,
     correct,
     handleKeyDown,
     countErrors,
@@ -16,6 +16,7 @@ const SinglePlayer = () => {
     resetGame,
     activeGame,
     setActiveGame,
+    setMode,
   } = useGame();
   const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ const SinglePlayer = () => {
   const [time, setTime] = useState<number>(0);
 
   useEffect(() => {
+    setMode("single");
     const initializedGame = async () => {
       await resetGame();
       setAccuracy(0);
@@ -33,10 +35,11 @@ const SinglePlayer = () => {
       setTime(60000);
     };
     initializedGame();
-  }, [])
+  }, [setMode, resetGame]);
+
   const handleGameOver = () => {
     const remainingTime = timeLeft === 0 ? 60000 : 60000 - timeLeft;
-    console.log("remainingTime: ", remainingTime)
+    console.log("remainingTime: ", remainingTime);
     const calculatedWPM = calculateWPM(remainingTime);
     const calculatedAccuracy = calculateAccuracy();
     const calculatedErrors = countErrors();
@@ -48,7 +51,7 @@ const SinglePlayer = () => {
     setTime(calculatedTime);
     setActiveGame(false);
 
-    navigate('/results', {
+    navigate("/results", {
       state: {
         accuracy: Number(calculatedAccuracy),
         wpm: calculatedWPM,
@@ -58,12 +61,11 @@ const SinglePlayer = () => {
     });
   };
 
-
   useEffect(() => {
-    if ((currentIndex === text.length || timeLeft === 0) && activeGame) {
+    if ((singlePlayerIndex === text.length || timeLeft === 0) && activeGame) {
       handleGameOver();
     }
-  }, [currentIndex, text, timeLeft, activeGame]);
+  }, [singlePlayerIndex, text, timeLeft, activeGame]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {

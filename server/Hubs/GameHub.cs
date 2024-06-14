@@ -26,27 +26,14 @@ public class GameHub : Hub
     string userName = Context.User.Identity.Name;
     if (!string.IsNullOrEmpty(userName))
     {
-      Console.WriteLine("UserIdentifier is null");
-      foreach (var claim in Context.User.Claims)
-      {
-        Console.WriteLine($"Claim {claim.Type}: {claim.Value}");
-      }
-
-      // Your custom logic for setting newPlayer
       var newPlayer = new OnlinePlayer
       {
-        username = userName, // Use the name claim
+        username = userName, 
         connectionId = Context.ConnectionId
-        // Additional player properties
       };
       _playerService.AddPlayerToQueue(newPlayer);
-      // Notify clients that a user has connected
       await Clients.All.SendAsync("UserConnected");
-
-      // Log the new player connection
-      Console.WriteLine($"New player connected: {newPlayer.username}, Connection ID: {newPlayer.connectionId}");
     }
-
   }
 
 

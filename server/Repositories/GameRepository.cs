@@ -17,4 +17,10 @@ public class GameRepository : IGameRepository
         _context.Games.Add(game);
         await _context.SaveChangesAsync();
     }
+
+    public async Task SaveMultiPlayerGame(MutliPlayerGame game)
+    {
+        _context.MultiPlayerGames.Add(game);
+        await _context.SaveChangesAsync();
+    }
 }

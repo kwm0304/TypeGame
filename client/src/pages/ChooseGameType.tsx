@@ -14,11 +14,11 @@ const ChooseGameType = () => {
           1 V 1
         </button>
         </Link>
-        <Link to="/games/tournament">
+        {/* <Link to="/games/tournament">
         <button className="bg-monkeyAccent w-48 h-24 rounded-xl hover:scale-110 hover:text-monkeyAccent hover:bg-darkerBG">
           TOURNAMENT
         </button>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

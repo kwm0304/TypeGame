@@ -1,38 +1,62 @@
-import { useEffect, useState } from 'react';
-import { HubConnectionBuilder, HubConnection, LogLevel } from '@microsoft/signalr';
-import { useAuth } from '@/context/AuthContext';
+import { Action, TextUpdate } from "@/types";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
-const useSignalRConnection = (url: string) => {
-  const [connection, setConnection] = useState<HubConnection | null>(null);
-  const { user } = useAuth();
-  useEffect(() => {
-    const token = localStorage.getItem("token")
-    console.log("token: ", token)
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(url, {
-        accessTokenFactory: () => token || "" // Assuming user object has a token
+export class SignalRService {
+  private signalRConnection?: HubConnection;
+
+  constructor(private username: string, private dispatch: React.Dispatch<Action>) {}
+
+  createGameConnection() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token not found in localStorage");
+      return;
+    }
+
+    this.signalRConnection = new HubConnectionBuilder()
+      .withUrl("/versus", {
+        accessTokenFactory: () => token || ""
       })
-      .configureLogging(LogLevel.Information)
+      .withAutomaticReconnect()
       .build();
 
-    newConnection.start()
-      .then(() => {
-        console.log('Connected to SignalR hub');
-        if (user) {
-          newConnection.invoke("AddPlayerToQueue", user.userName)
-            .catch(err => console.log('Error adding player to queue: ', err));
-        }
-      })
-      .catch(err => console.log('Error connecting to SignalR hub: ', err));
+    this.signalRConnection
+      .start()
+      .then(() => console.log("SignalR connection established"))
+      .catch((error) => console.error("SignalR connection error:", error));
 
-    setConnection(newConnection);
+    this.signalRConnection.on('UserConnected', () => {
+      console.log('Connection established');
+    });
 
-    return () => {
-      newConnection.stop().then(() => console.log('Disconnected from SignalR hub'));
-    };
-  }, [url, user]);
+    this.signalRConnection.on('GameText', (player1, player2, content) => {
+      console.log(`Game started between ${player1} and ${player2}`);
+      console.log('Game content:', content);
+      this.dispatch({ type: 'GAME_STARTED', payload: { player1, player2, content } });
+    });
 
-  return connection;
-};
+    this.signalRConnection.on('ReceiveUpdate', (update: TextUpdate) => {
+      console.log('Received update:', update);
+      this.dispatch({ type: 'RECEIVE_UPDATE', payload: update });
+    });
 
-export default useSignalRConnection;
+    this.signalRConnection.on('GameEnded', () => {
+      console.log('Game ended');
+    });
+  }
+
+
+  sendUpdate(update: TextUpdate) {
+    if (this.signalRConnection) {
+      this.signalRConnection.invoke('InGameUpdate', update)
+        .catch((error) => console.log(error));
+    }
+  }
+
+  endGame() {
+    if (this.signalRConnection) {
+      this.signalRConnection.invoke('EndGame')
+        .catch((error) => console.log(error));
+    }
+  }
+}

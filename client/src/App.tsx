@@ -6,7 +6,6 @@ import { UserProvider } from "./context/AuthContext";
 import { GameProvider } from "./context/GameContext";
 import DisplayResults from "./pages/DisplayResults";
 import ChooseGameType from "./pages/ChooseGameType";
-import Tournament from "./pages/Tournament";
 import Versus from "./pages/Versus";
 import Leaderboard from "./pages/Leaderboard";
 
@@ -21,7 +20,7 @@ function App() {
             <Route path="/user" element={<UserAuthentication />} />
             <Route path="/results" element={<DisplayResults />} />
             <Route path="/games" element={<ChooseGameType />} />
-            <Route path="/games/tournament" element={<Tournament />} />
+            {/* <Route path="/games/tournament" element={<Tournament />} /> */}
             <Route path="/games/1v1" element={<Versus />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
           </Routes>

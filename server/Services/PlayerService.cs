@@ -1,50 +1,70 @@
+// PlayerService.cs
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using server.Dtos;
-
-namespace server.Services;
 
 public class PlayerService
 {
-  private static readonly Queue<OnlinePlayer> PlayerPool = new Queue<OnlinePlayer>(); //onlineplayer -> connId,username
-  private readonly Dictionary<string, GameConnectionDto> activeGames = new Dictionary<string, GameConnectionDto>();
-  public event Action<GameConnectionDto> GameReady;
+  private readonly Queue<OnlinePlayer> _playerPool = new Queue<OnlinePlayer>();
+  private readonly Dictionary<string, GameConnectionDto> _activeGames = new Dictionary<string, GameConnectionDto>();
+  private readonly IServiceProvider _serviceProvider;
+
+  public event Func<GameConnectionDto, Task> GameReady;
+
+  public PlayerService(IServiceProvider serviceProvider)
+  {
+    _serviceProvider = serviceProvider;
+  }
+
   public void AddPlayerToQueue(OnlinePlayer player)
   {
-    lock (PlayerPool)
+    lock (_playerPool)
     {
-      PlayerPool.Enqueue(player);
+      _playerPool.Enqueue(player);
     }
-    if (PlayerPool.Count >= 2)
+
+    if (_playerPool.Count >= 2)
     {
       var gameDto = CreateGameParticipants();
-      GameReady?.Invoke(gameDto);
+      _ = OnGameReady(gameDto);
     }
   }
 
-  public GameConnectionDto CreateGameParticipants()
+  private GameConnectionDto CreateGameParticipants()
   {
-    lock (PlayerPool)
+    Console.WriteLine("PlayerPool count: " + _playerPool.Count + "--------------------------------");
+    lock (_playerPool)
     {
-      if (PlayerPool.Count < 2)
-      {
-        throw new InvalidOperationException("Not enough players to create a new game.");
-      }
+      OnlinePlayer participant1 = _playerPool.Dequeue();
+      OnlinePlayer participant2 = _playerPool.Dequeue();
+      
+Console.WriteLine("PlayerPool count after deque: " + _playerPool.Count + "--------------------------------");
+      Console.WriteLine($"Creating game between {participant1.username} and {participant2.username}");
 
-      OnlinePlayer participant1 = PlayerPool.Dequeue();
-      OnlinePlayer participant2 = PlayerPool.Dequeue();
-
-      GameConnectionDto gameDto = new()
+      var gameDto = new GameConnectionDto
       {
         player1 = participant1,
         player2 = participant2
       };
-      activeGames[gameDto.GameIdentifier] = gameDto;
+      _activeGames[gameDto.GameIdentifier] = gameDto;
       return gameDto;
+    }
+  }
+
+  private async Task OnGameReady(GameConnectionDto gameDto)
+  {
+    if (GameReady != null)
+    {
+      using var scope = _serviceProvider.CreateScope();
+      var gameService = scope.ServiceProvider.GetRequiredService<GameService>();
+      await gameService.HandleGameReady(gameDto);
     }
   }
 
   public GameConnectionDto GetGroupByGroupName(string groupName)
   {
-    if (activeGames.TryGetValue(groupName, out var gameConnection))
+    if (_activeGames.TryGetValue(groupName, out var gameConnection))
     {
       return gameConnection;
     }
@@ -59,16 +79,14 @@ public class PlayerService
 
   public List<string> ActiveGameIdentifiers()
   {
-    return activeGames.Keys.ToList();
+    return _activeGames.Keys.ToList();
   }
 
-    
-
-    internal void RemoveActiveGame(string groupName)
+  public void RemoveActiveGame(string groupName)
+  {
+    lock (_activeGames)
     {
-        lock (activeGames)
-        {
-          activeGames.Remove(groupName);
-        }
+      _activeGames.Remove(groupName);
     }
+  }
 }

@@ -6,7 +6,7 @@ import Timer from "@/components/Timer";
 const SinglePlayer = () => {
   const {
     text,
-    singlePlayerIndex,
+    currentIndex,
     correct,
     handleKeyDown,
     countErrors,
@@ -16,7 +16,6 @@ const SinglePlayer = () => {
     resetGame,
     activeGame,
     setActiveGame,
-    setMode,
   } = useGame();
   const navigate = useNavigate();
 
@@ -26,7 +25,6 @@ const SinglePlayer = () => {
   const [time, setTime] = useState<number>(0);
 
   useEffect(() => {
-    setMode("single");
     const initializedGame = async () => {
       await resetGame();
       setAccuracy(0);
@@ -35,8 +33,7 @@ const SinglePlayer = () => {
       setTime(60000);
     };
     initializedGame();
-  }, [setMode, resetGame]);
-
+  }, []);
   const handleGameOver = () => {
     const remainingTime = timeLeft === 0 ? 60000 : 60000 - timeLeft;
     console.log("remainingTime: ", remainingTime);
@@ -62,10 +59,10 @@ const SinglePlayer = () => {
   };
 
   useEffect(() => {
-    if ((singlePlayerIndex === text.length || timeLeft === 0) && activeGame) {
+    if ((currentIndex === text.length || timeLeft === 0) && activeGame) {
       handleGameOver();
     }
-  }, [singlePlayerIndex, text, timeLeft, activeGame]);
+  }, [currentIndex, text, timeLeft, activeGame]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {

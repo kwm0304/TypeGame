@@ -119,7 +119,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         text,
         currentIndex,
         correct,
-        setCurrentIndex,
         setCorrect,
         handleKeyDown,
         undoLastKey,

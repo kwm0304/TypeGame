@@ -40,30 +40,26 @@ export interface UserProfile {
 
 export interface GameContextProps {
   text: string;
-  singlePlayerIndex: number;
-  player1Index: number;
-  player2Index: number;
+  currentIndex: number;
   correct: (boolean | null)[];
-  setSinglePlayerIndex: (index: number | ((prevIndex: number) => number)) => void;
-  setPlayer1Index: (index: number | ((prevIndex: number) => number)) => void;
-  setPlayer2Index: (index: number | ((prevIndex: number) => number)) => void;
-  setCorrect: (
-    correct:
-      | (boolean | null)[]
-      | ((prev: (boolean | null)[]) => (boolean | null)[])
-  ) => void;
-  handleKeyDown: (e: React.KeyboardEvent, player: string | null) => void;
-  undoLastKey: (player: string | null) => void;
+  setCorrect: (correct: (boolean | null)[]) => void;
+  handleKeyDown: (e: React.KeyboardEvent) => void;
+  undoLastKey: () => void;
   countErrors: () => number;
   calculateAccuracy: () => number;
   calculateWPM: (time: number) => number;
   startTimer: () => void;
   timeLeft: number;
-  resetGame: (externalText?: string) => void;
+  resetGame: () => void;
   activeGame: boolean;
   setActiveGame: (active: boolean) => void;
-  setMode: (mode: "single" | "versus") => void;
-  mode: "single" | "versus";
+}
+
+export interface TextUpdate {
+  Sender: string;
+  Receiver: string;
+  CharIndex: number;
+  IsCorrect: (boolean | null)[];
 }
 
 export interface DisplayResultsProps {
@@ -72,3 +68,25 @@ export interface DisplayResultsProps {
   errors: number;
   time: number;
 }
+
+export interface GameState {
+  gameStarted: boolean;
+  player1: string | null;
+  player2: string | null;
+  content: string;
+  updates: Array<TextUpdate>;
+}
+
+export interface Action {
+  type: string;
+  payload?: any;
+}
+
+export const initialState: GameState = {
+  gameStarted: false,
+  player1: null,
+  player2: null,
+  content: '',
+  updates: [],
+};
+

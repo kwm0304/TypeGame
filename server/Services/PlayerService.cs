@@ -42,12 +42,19 @@ public class PlayerService
     }
   }
 
+  public GameConnectionDto GetGroupByGroupName(string groupName)
+  {
+    if (activeGames.TryGetValue(groupName, out var gameConnection))
+    {
+      return gameConnection;
+    }
+    throw new KeyNotFoundException("Group not found");
+  }
 
-
-  public string GetGroupName(TextUpdate update)
+  public string GetGroupName(string username)
   {
     List<string> activeIds = ActiveGameIdentifiers();
-    return activeIds.FirstOrDefault(id => id.Contains(update.Sender, StringComparison.OrdinalIgnoreCase)) ?? "Game id not found";
+    return activeIds.FirstOrDefault(id => id.Contains(username, StringComparison.OrdinalIgnoreCase)) ?? "Game id not found";
   }
 
   public List<string> ActiveGameIdentifiers()
@@ -55,4 +62,13 @@ public class PlayerService
     return activeGames.Keys.ToList();
   }
 
+    
+
+    internal void RemoveActiveGame(string groupName)
+    {
+        lock (activeGames)
+        {
+          activeGames.Remove(groupName);
+        }
+    }
 }

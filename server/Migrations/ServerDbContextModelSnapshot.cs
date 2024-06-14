@@ -155,34 +155,19 @@ namespace server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PlayerGame", b =>
+            modelBuilder.Entity("PlayerMultiPlayerGame", b =>
                 {
-                    b.Property<int>("GameId")
+                    b.Property<int>("MultiPlayerGameId")
                         .HasColumnType("int");
 
                     b.Property<string>("PlayerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("GameId", "PlayerId");
+                    b.HasKey("MultiPlayerGameId", "PlayerId");
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("PlayerGame");
-                });
-
-            modelBuilder.Entity("PlayerTournament", b =>
-                {
-                    b.Property<string>("PlayerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TournamentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlayerId", "TournamentId");
-
-                    b.HasIndex("TournamentId");
-
-                    b.ToTable("PlayerTournament");
+                    b.ToTable("PlayerMultiPlayerGame");
                 });
 
             modelBuilder.Entity("server.Models.Game", b =>
@@ -190,6 +175,8 @@ namespace server.Migrations
                     b.Property<int>("GameId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
 
                     b.Property<double>("Accuracy")
                         .HasColumnType("float");
@@ -200,10 +187,10 @@ namespace server.Migrations
                     b.Property<DateTime>("PlayedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("WinnerId")
+                    b.Property<string>("PlayerId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("WinnerTime")
+                    b.Property<double>("Time")
                         .HasColumnType("float");
 
                     b.Property<double>("WordsPerMinute")
@@ -211,9 +198,49 @@ namespace server.Migrations
 
                     b.HasKey("GameId");
 
-                    b.HasIndex("WinnerId");
+                    b.HasIndex("PlayerId");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("server.Models.MutliPlayerGame", b =>
+                {
+                    b.Property<int>("MultiPlayerGameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MultiPlayerGameId"));
+
+                    b.Property<bool>("IsComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("PlayedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Player1Accuracy")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Player1WordsPerMinute")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Player2Accuracy")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Player2WordsPerMinute")
+                        .HasColumnType("float");
+
+                    b.Property<string>("WinnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("WinnerTime")
+                        .HasColumnType("float");
+
+                    b.HasKey("MultiPlayerGameId");
+
+                    b.HasIndex("WinnerId");
+
+                    b.ToTable("MultiPlayerGames");
                 });
 
             modelBuilder.Entity("server.Models.Player", b =>
@@ -296,37 +323,6 @@ namespace server.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("server.Models.Tournament", b =>
-                {
-                    b.Property<int>("TournamentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TournamentId"));
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RunnerUpId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ThirdPlaceId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("WinnerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("TournamentId");
-
-                    b.HasIndex("RunnerUpId");
-
-                    b.HasIndex("ThirdPlaceId");
-
-                    b.HasIndex("WinnerId");
-
-                    b.ToTable("Tournaments");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -378,77 +374,43 @@ namespace server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PlayerGame", b =>
+            modelBuilder.Entity("PlayerMultiPlayerGame", b =>
                 {
-                    b.HasOne("server.Models.Game", null)
+                    b.HasOne("server.Models.MutliPlayerGame", null)
                         .WithMany()
-                        .HasForeignKey("GameId")
+                        .HasForeignKey("MultiPlayerGameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("server.Models.Player", null)
                         .WithMany()
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PlayerTournament", b =>
-                {
-                    b.HasOne("server.Models.Player", null)
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("server.Models.Tournament", null)
-                        .WithMany()
-                        .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("server.Models.Game", b =>
                 {
-                    b.HasOne("server.Models.Tournament", null)
+                    b.HasOne("server.Models.Player", "User")
                         .WithMany("Games")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("server.Models.MutliPlayerGame", b =>
+                {
+                    b.HasOne("server.Models.Player", "Winner")
+                        .WithMany()
+                        .HasForeignKey("WinnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("server.Models.Player", "Winner")
-                        .WithMany()
-                        .HasForeignKey("WinnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Winner");
                 });
 
-            modelBuilder.Entity("server.Models.Tournament", b =>
-                {
-                    b.HasOne("server.Models.Player", "RunnerUp")
-                        .WithMany()
-                        .HasForeignKey("RunnerUpId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("server.Models.Player", "ThirdPlace")
-                        .WithMany()
-                        .HasForeignKey("ThirdPlaceId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("server.Models.Player", "Winner")
-                        .WithMany()
-                        .HasForeignKey("WinnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("RunnerUp");
-
-                    b.Navigation("ThirdPlace");
-
-                    b.Navigation("Winner");
-                });
-
-            modelBuilder.Entity("server.Models.Tournament", b =>
+            modelBuilder.Entity("server.Models.Player", b =>
                 {
                     b.Navigation("Games");
                 });

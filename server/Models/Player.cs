@@ -9,7 +9,7 @@ public class Player : IdentityUser
     public int GamesLost { get; set; }
     public double WinRate() => (double)GamesWon / (double)GamesPlayed;
     public int Rank { get; set; }
-    public List<Game> Games { get; set; }
-    public List<Tournament> Tournaments { get; set; }
+    public List<Game> Games { get; set; } = new();
+    public List<MutliPlayerGame> MultiPlayerGames { get; set; } = new();
     public double AverageGameTime { get; set; }
 }

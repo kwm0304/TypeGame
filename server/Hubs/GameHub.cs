@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using server.Data;
 using server.Dtos;
 using server.Models;
@@ -53,7 +54,27 @@ public class GameHub : Hub
   //in-game update
   public async Task InGameUpdate(TextUpdate update)
   {
-    string groupName = _playerService.GetGroupName(update);
+    string username = update.Sender;
+    string groupName = _playerService.GetGroupName(username);
     await Clients.OthersInGroup(groupName).SendAsync("ReceiveUpdate", update);
+  }
+
+  public async Task EndGame()
+  {
+    //get group name
+    string username = Context.User.Identity.Name;
+    string groupName = _playerService.GetGroupName(username);
+    if (groupName is not null)
+    {
+      GameConnectionDto game = _playerService.GetGroupByGroupName(groupName);
+      await Groups.RemoveFromGroupAsync(game.player1.connectionId, groupName);
+      await Groups.RemoveFromGroupAsync(game.player2.connectionId, groupName);
+      _playerService.RemoveActiveGame(groupName);
+      await OnDisconnectedAsync(null);
+    }
+    else {
+      Console.WriteLine("Game has already ended");
+      await OnDisconnectedAsync(null);
+    }
   }
 }

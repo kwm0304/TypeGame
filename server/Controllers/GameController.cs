@@ -49,11 +49,10 @@ public class GameController : ControllerBase
     }
     Game game = new Game
     {
-      WinnerId = player.Id,
-      Winner = player,
-      Participants = new List<Player> { player },
+      PlayerId = player.Id,
+      User = player,
       IsComplete = true,
-      WinnerTime = gameDto.WinnerTime,
+      Time = gameDto.Time,
       WordsPerMinute = gameDto.WordsPerMinute,
       Accuracy = gameDto.Accuracy,
       PlayedAt = DateTime.Now

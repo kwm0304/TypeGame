@@ -11,17 +11,12 @@ const DisplayResults: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    console.log("Inside useEffect");
     if (isLoggedIn() || user) {
-      console.log("User is defined:", user);
       const username = user?.userName;
-      console.log("Calling submitGameResults with:", { username, time, wpm, accuracy });
       submitGameResults(username, time, wpm, accuracy)
         .then(response => {
           console.log("STATUS: ", response.status)
           console.log("DATA: ", response.data);
-
-          console.log("Game results submitted successfully:", response);
         })
         .catch(error => {
           console.error("Error submitting game results:", error);
@@ -35,7 +30,7 @@ const DisplayResults: React.FC = () => {
     navigate("/");
   }
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-monkeyBG text-monkeyAccent">
+    <div className="w-full flex flex-col justify-center items-center bg-monkeyBG text-monkeyAccent">
       <h1>Results</h1>
       <h2>Accuracy: {accuracy}%</h2>
       <h2>WPM: {wpm}</h2>

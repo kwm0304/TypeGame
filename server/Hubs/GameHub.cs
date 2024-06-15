@@ -49,8 +49,6 @@ public class GameHub : Hub
 
   public async Task CreateGame(GameConnectionDto conn)
   {
-    string username1 = conn.player1.username;
-    Console.WriteLine("Username from creategame: " + username1);
     await Groups.AddToGroupAsync(conn.player1.connectionId, conn.GameIdentifier);
     await Groups.AddToGroupAsync(conn.player2.connectionId, conn.GameIdentifier);
 

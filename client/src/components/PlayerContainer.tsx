@@ -1,29 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useGame } from "@/context/GameContext";
 
 interface PlayerContainerProps {
   playerId: string | null;
-  player: string; // 'player1' or 'player2'
-  handleKeyPress: (e: KeyboardEvent, player: string) => void;
+  text: string;
 }
 
 const PlayerContainer: React.FC<PlayerContainerProps> = ({
   playerId,
-  player,
-  handleKeyPress,
+  text
 }) => {
-  const { text, correct } = useGame();
+  const {
+    currentIndex,
+    correct,
+    handleKeyDown,
+    countErrors,
+    calculateAccuracy,
+    calculateWPM,
+    timeLeft,
+    activeGame,
+    setActiveGame,
+  } = useGame();
 
-  if (playerId === null) {
-    return null;
-  }
+  const [accuracy, setAccuracy] = useState<number>(0);
+  const [wpm, setWpm] = useState<number>(0);
+  const [errors, setErrors] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
+
+  useEffect(() => {
+    const initializedGame = async () => {
+      setAccuracy(0);
+      setWpm(0);
+      setErrors(0);
+      setTime(60000);
+    };
+    initializedGame();
+  }, []);
+  const handleGameOver = () => {
+    const remainingTime = timeLeft === 0 ? 60000 : 60000 - timeLeft;
+    console.log("remainingTime: ", remainingTime);
+    const calculatedWPM = calculateWPM(remainingTime);
+    const calculatedAccuracy = calculateAccuracy();
+    const calculatedErrors = countErrors();
+    const calculatedTime = remainingTime;
+
+    setWpm(calculatedWPM);
+    setAccuracy(Number(calculatedAccuracy));
+    setErrors(calculatedErrors);
+    setTime(calculatedTime);
+    setActiveGame(false);
+  };
+
+  useEffect(() => {
+    if ((currentIndex === text.length || timeLeft === 0) && activeGame) {
+      handleGameOver();
+    }
+  }, [currentIndex, text, timeLeft, activeGame]);
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      handleKeyDown(e as unknown as React.KeyboardEvent);
+    };
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [handleKeyDown]);
 
   return (
-    <div
-      className="w-full px-48"
-      tabIndex={0}
-      onKeyDown={(e) => handleKeyPress(e as unknown as KeyboardEvent, player)}
-    >
+    <div className="w-full flex flex-wrap items-center justify-center text-monkeyDarkText pb-44 px-44 font-reddit-mono text-3xl break-words font-semibold leading-loose">
       <h2 className="text-monkeyAccent font-bold text-xl">{playerId}</h2>
       <div className="w-full text-monkeyText text-xl flex flex-wrap items-center justify-center pb-44 px-44 font-reddit-mono text-3xl break-words font-semibold leading-loose">
         {text.split("").map((char, i) => {

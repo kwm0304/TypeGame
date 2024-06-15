@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const ChooseGameType = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-monkeyBG">
+    <div className="w-full flex flex-col justify-center items-center bg-monkeyBG">
       <div className="flex gap-4 pb-24 font-bold text-darkerBG text-2xl">
         <Link to="/">
           <button className="bg-monkeyAccent w-48 h-24 rounded-xl hover:scale-110 hover:text-monkeyAccent hover:bg-darkerBG">

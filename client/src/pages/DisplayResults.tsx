@@ -1,18 +1,16 @@
 import { DisplayResultsProps } from "@/types"
 import React, { useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { GrPowerReset } from "react-icons/gr";
 import { useAuth } from "@/context/AuthContext";
 import { submitGameResults } from "@/services/gameTextService";
-const DisplayResults: React.FC = () => {
-  const location = useLocation();
+const DisplayResults: React.FC<DisplayResultsProps> = ({accuracy, wpm, errors, time}) => {
   const navigate = useNavigate();
-  const { accuracy, wpm, errors, time } = location.state as DisplayResultsProps;
   const { user, isLoggedIn } = useAuth();
 
   useEffect(() => {
     if (isLoggedIn() || user) {
-      const username = user?.userName;
+      const username = user?.userName ? user?.userName : "Username not found";
       submitGameResults(username, time, wpm, accuracy)
         .then(response => {
           console.log("STATUS: ", response.status)

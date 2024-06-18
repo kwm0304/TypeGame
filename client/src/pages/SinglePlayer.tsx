@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGame } from "@/context/GameContext";
 import Timer from "@/components/Timer";
+import DisplayResults from "./DisplayResults";
 
 const SinglePlayer = () => {
   const {
@@ -27,6 +28,7 @@ const SinglePlayer = () => {
   useEffect(() => {
     const initializedGame = async () => {
       await resetGame();
+      setCompleted(false);
       setAccuracy(0);
       setWpm(0);
       setErrors(0);
@@ -40,7 +42,7 @@ const SinglePlayer = () => {
       setActiveGame(true);
     }
   }, [timerStarted]);
-  
+
   const handleGameOver = () => {
     const remainingTime = timeLeft === 0 ? 60000 : 60000 - timeLeft;
     setWpm(calculateWPM(remainingTime));
@@ -48,6 +50,7 @@ const SinglePlayer = () => {
     setErrors(countErrors());
     setTime(remainingTime);
     setActiveGame(false);
+    setCompleted(true);
   };
 
   useEffect(() => {
@@ -69,24 +72,30 @@ const SinglePlayer = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-monkeyBG">
-      <div className="w-full">
-        <Timer />
-      </div>
-      <div className="w-full flex flex-wrap items-center justify-center text-monkeyDarkText pb-44 px-44 font-reddit-mono text-3xl break-words font-semibold leading-loose">
-        {text.split("").map((char, i) => {
-          let className = "text-monkeyDarkText";
-          if (correct[i] === true) {
-            className = "text-white";
-          } else if (correct[i] === false) {
-            className = "text-red-500";
-          }
-          return (
-            <span key={i} className={className}>
-              {char === " " ? "\u00A0" : char}
-            </span>
-          );
-        })}
-      </div>
+      {!completed ? (
+        <>
+          <div className="w-full">
+            <Timer />
+          </div>
+          <div className="w-full flex flex-wrap items-center justify-center text-monkeyDarkText pb-44 px-44 font-reddit-mono text-3xl break-words font-semibold leading-loose">
+            {text.split("").map((char, i) => {
+              let className = "text-monkeyDarkText";
+              if (correct[i] === true) {
+                className = "text-white";
+              } else if (correct[i] === false) {
+                className = "text-red-500";
+              }
+              return (
+                <span key={i} className={className}>
+                  {char === " " ? "\u00A0" : char}
+                </span>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <DisplayResults accuracy={accuracy} wpm={wpm} errors={errors} time={time} />
+      )}
     </div>
   );
 };

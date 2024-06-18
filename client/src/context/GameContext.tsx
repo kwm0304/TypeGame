@@ -12,19 +12,20 @@ const GameContext = createContext<GameContextProps | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [text, setText] = useState<string>("");
+  const [currentGameText, setCurrentGameText] = useState<string>("");
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [correct, setCorrect] = useState<(boolean | null)[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
   const [activeGame, setActiveGame] = useState<boolean>(false);
 
+  //ok for both
   useEffect(() => {
     const fetchText = async () => {
       try {
-        const gameText = await getGameText();
-        const cleaned = gameText.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "");
+        const cleaned = currentGameText.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "");
         setText(cleaned);
-        setCorrect(new Array(cleaned.length).fill(null));
+        setCorrect(new Array(cleaned.length).fill(null)); //maybe should be set in playerContainer
       } catch (error) {
         console.error(error);
       }
@@ -32,6 +33,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     fetchText();
   }, []);
 
+  //ok for both
   useEffect(() => {
     if (timerStarted && timeLeft > 0) {
       const timerId = setInterval(() => {
@@ -41,10 +43,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       return () => clearInterval(timerId);
     }
   }, [timerStarted, timeLeft]);
-
+//ok for both
   const startTimer = () => {
     setTimerStarted(true);
   };
+
+  
 
   const resetGame = async () => {
     setCurrentIndex(0);
@@ -130,6 +134,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         activeGame,
         setActiveGame,
         timeLeft,
+        setCurrentGameText,
+        timerStarted
       }}
     >
       {children}

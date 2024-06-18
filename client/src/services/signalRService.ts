@@ -46,9 +46,9 @@ export class SignalRService {
   }
 
 
-  sendUpdate(update: TextUpdate) {
+  sendUpdate(sender: string, receiver: string, arr: (boolean | null)[], active: boolean) {
     if (this.signalRConnection) {
-      this.signalRConnection.invoke('InGameUpdate', update)
+      this.signalRConnection.invoke('InGameUpdate', sender, receiver, arr, active)
         .catch((error) => console.log(error));
     }
   }
@@ -59,4 +59,9 @@ export class SignalRService {
         .catch((error) => console.log(error));
     }
   }
+
+  getConnection() {
+    return this.signalRConnection;
+  }
+
 }

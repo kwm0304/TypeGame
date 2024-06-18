@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGame } from "@/context/GameContext";
 import Timer from "@/components/Timer";
 
@@ -16,13 +15,14 @@ const SinglePlayer = () => {
     resetGame,
     activeGame,
     setActiveGame,
+    timerStarted,
   } = useGame();
-  const navigate = useNavigate();
 
-  const [accuracy, setAccuracy] = useState<number>(0);
-  const [wpm, setWpm] = useState<number>(0);
-  const [errors, setErrors] = useState<number>(0);
-  const [time, setTime] = useState<number>(0);
+  const [accuracy, setAccuracy] = useState(0);
+  const [wpm, setWpm] = useState(0);
+  const [errors, setErrors] = useState(0);
+  const [time, setTime] = useState(0);
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     const initializedGame = async () => {
@@ -34,28 +34,20 @@ const SinglePlayer = () => {
     };
     initializedGame();
   }, []);
+
+  useEffect(() => {
+    if (timerStarted) {
+      setActiveGame(true);
+    }
+  }, [timerStarted]);
+  
   const handleGameOver = () => {
     const remainingTime = timeLeft === 0 ? 60000 : 60000 - timeLeft;
-    console.log("remainingTime: ", remainingTime);
-    const calculatedWPM = calculateWPM(remainingTime);
-    const calculatedAccuracy = calculateAccuracy();
-    const calculatedErrors = countErrors();
-    const calculatedTime = remainingTime;
-
-    setWpm(calculatedWPM);
-    setAccuracy(Number(calculatedAccuracy));
-    setErrors(calculatedErrors);
-    setTime(calculatedTime);
+    setWpm(calculateWPM(remainingTime));
+    setAccuracy(Number(calculateAccuracy()));
+    setErrors(countErrors());
+    setTime(remainingTime);
     setActiveGame(false);
-
-    navigate("/results", {
-      state: {
-        accuracy: Number(calculatedAccuracy),
-        wpm: calculatedWPM,
-        errors: calculatedErrors,
-        time: calculatedTime,
-      },
-    });
   };
 
   useEffect(() => {

@@ -50,16 +50,20 @@ export interface GameContextProps {
   calculateWPM: (time: number) => number;
   startTimer: () => void;
   timeLeft: number;
+  timerStarted: boolean;
   resetGame: () => void;
   activeGame: boolean;
   setActiveGame: (active: boolean) => void;
+  setCurrentGameText: (text: string) => void;
+  update: (boolean | null)[];
+  setUpdate: (update: (boolean | null)[]) => void;
 }
 
 export interface TextUpdate {
   Sender: string;
   Receiver: string;
-  CharIndex: number;
-  IsCorrect: (boolean | null)[];
+  Update: (boolean | null)[];
+  IsGameActive: boolean;
 }
 
 export interface DisplayResultsProps {
@@ -86,7 +90,6 @@ export const initialState: GameState = {
   gameStarted: false,
   player1: null,
   player2: null,
-  content: '',
+  content: "",
   updates: [],
 };
-
